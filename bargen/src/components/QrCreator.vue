@@ -83,9 +83,7 @@
 <script lang="ts">
 
 import { defineComponent } from 'vue'
-// import { QrCode } from "../../../QR-Code-generator/typescript-javascript/qrcodegen";
-/// <reference path='../../../QR-Code-generator/typescript-javascript/qrcodegen.ts'/>
-import {qrcodegen} from '../../../QR-Code-generator/typescript-javascript/qrcodegen';
+import * as qrcodegen from "./qrcodegen";
 
 export default defineComponent({
   props: ['propdata'],
@@ -99,7 +97,7 @@ export default defineComponent({
           currentPlayer: 0,
           outputElem: document.getElementById("output") as HTMLElement,
           redraw: 0,
-          qr: null,
+          qr: document.createElement("canvas"),
           unitArray: ["I", "C", "A", "W", ""],
           playerArray: ["1", "2", "3", "4"],
           item_style: this.getWidthStyle((window.innerHeight < window.innerWidth ? window.innerHeight : window.innerWidth) * 0.022),
@@ -142,6 +140,7 @@ export default defineComponent({
       if (item[1] == "4") {
         return 3;
       }
+      return 0
     },
     getByte(item: string): qrcodegen.byte
     {
@@ -254,7 +253,7 @@ export default defineComponent({
               + "font-size: " + (size * 2 / 4) + "px;";
       return ret;
     },
-    updateRelativeSize(e: Event) {
+    updateRelativeSize(e: Event | null) {
       this.redraw += 1
       var size = Math.floor(
         (window.innerHeight < window.innerWidth ? window.innerHeight : window.innerWidth) * 0.65 * (1 / this.length)
@@ -299,13 +298,13 @@ export default defineComponent({
   mounted() {
     window.addEventListener("resize", this.updateRelativeSize);
     console.log("Wat is up\n");
+    console.log(qrcodegen);
     for (var x = 0; x < this.length; x++) {
       this.count[x] = new Array<string>();
       for (var y = 0; y < this.length; y++) {
         this.count[x].push("")
       }
     }
-    console.log(qrcodegen)
     this.outputElem = document.getElementById("output") as HTMLElement
     this.generateQr()
     this.updateRelativeSize(null)
