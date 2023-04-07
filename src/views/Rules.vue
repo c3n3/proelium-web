@@ -4,16 +4,17 @@ import QrCreator from '../components/QrCreator.vue'
 
 
 <template>
-  <div class="about">
-    <QrCreator></QrCreator>
+  <div class="container">
+    Rules
   </div>
 </template>
 
 <style>
-.about {
+.container {
   min-height: 100vh;
   display: flex;
   flex: 1;
-  align-items: center;
+  flex-direction: column;
 }
+
 </style>

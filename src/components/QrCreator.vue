@@ -104,22 +104,7 @@ export default defineComponent({
       }
   },
   methods: {
-    drawCanvas(qr: qrcodegen.QrCode, scale: number, border: number, lightColor: string, darkColor: string, canvas: HTMLCanvasElement): void {
-      if (scale <= 0 || border < 0)
-        throw new RangeError("Value out of range");
-      const width: number = (qr.size + border * 2) * scale;
-      canvas.width = width;
-      canvas.height = width;
-      let ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-      for (let y = -border; y < qr.size + border; y++) {
-        for (let x = -border; x < qr.size + border; x++) {
-          ctx.fillStyle = qr.getModule(x, y) ? darkColor : lightColor;
-          ctx.fillRect((x + border) * scale, (y + border) * scale, scale, scale);
-        }
-      }
-    },
     appendCanvas(caption: string): HTMLCanvasElement {
-
       if (this.qr) {
         this.qr.remove()
       }
@@ -207,7 +192,7 @@ export default defineComponent({
     generateQr() {
       const errCorLvl: qrcodegen.QrCode.Ecc = qrcodegen.QrCode.Ecc.LOW;  // Error correction level
       const qr: qrcodegen.QrCode = qrcodegen.QrCode.encodeText(this.getByteArray(), errCorLvl);  // Make the QR Code symbol
-      this.drawCanvas(qr, 10, 4, "#FFFFFF", "#000000", this.appendCanvas("hello-world-QR"));  // Draw it on screen
+      qrcodegen.drawCanvas(qr, 10, 4, "#FFFFFF", "#000000", this.appendCanvas("hello-world-QR"));  // Draw it on screen
     },
     getItem(x: number, y: number): string {
       if (this.count.length > 0) {
