@@ -7,6 +7,7 @@
       </div>
       <div style="min-width: 50px;" class="qr-item" @click="changeSelectorUnit()"> {{ unitArray[currentUnit] }}</div>
       <div :style="'min-width: 50px;' + getColor(getCurrentUnit())" class="qr-item" @click="changePlayer()"> {{ playerArray[currentPlayer] }}</div>
+      <div style="min-width: 100px;" class="clear" @click="clear()">Clear</div>
     </div>
     <div class="qr-grid">
       <div v-for="i in length" :key="i" class="qr-row">
@@ -78,6 +79,21 @@
   margin: 5px;
   border: 1px solid white;
   user-select: none; /* Standard syntax */
+}
+
+.clear {
+  font-family: "Times New Roman", Times, serif;
+  /* min-width: 35px; */
+  /* min-height: 35px; */
+  text-align: center;
+  margin: 5px;
+  border: 1px solid white;
+  user-select: none; /* Standard syntax */
+}
+
+.clear:hover {
+  background-color: whitesmoke;
+  color: black;
 }
 </style>
 <script lang="ts">
@@ -199,6 +215,13 @@ export default defineComponent({
         return this.count[x][y];
       }
       return ""
+    },
+    clear() {
+      for (var i = 0; i < this.length; i++) {
+        for (var j = 0; j < this.length; j++) {
+          this.count[i][j] = ' '
+        }
+      }
     },
     change(x: number, y: number) {
       var unit = this.getCurrentUnit();
