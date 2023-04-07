@@ -52,22 +52,22 @@
         </div>
         <div class="selector-container">
           <div class="controller-selector">
-            <label class="number-label">Selectable Count:</label>
+            <label class="number-label">Direction Count:</label>
             <div class="number-value">{{ directionsCount }}</div>
             <div class="button" @click="changeDirCount(1)">+</div>
             <div class="button" @click="changeDirCount(-1)">-</div>
           </div>
           <div class="controller-selector">
-            <label class="number-label">Selectable Count:</label>
-            <div class="number-value">{{ unitsCount }}</div>
-            <div class="button" @click="changeUnitCount(1)">+</div>
-            <div class="button" @click="changeUnitCount(-1)">-</div>
-          </div>
-          <div class="controller-selector">
-            <label class="number-label">Selectable Count:</label>
+            <label class="number-label">Turn Count:</label>
             <div class="number-value">{{ turnsCount }}</div>
             <div class="button" @click="changeTurnsCount(1)">+</div>
             <div class="button" @click="changeTurnsCount(-1)">-</div>
+          </div>
+          <div class="controller-selector">
+            <label class="number-label">Unit Count:</label>
+            <div class="number-value">{{ unitsCount }}</div>
+            <div class="button" @click="changeUnitCount(1)">+</div>
+            <div class="button" @click="changeUnitCount(-1)">-</div>
           </div>
         </div>
       </div>
@@ -365,10 +365,10 @@ export default defineComponent({
       // Action string: 'A:TYPE,IXX,CXX,AXX,'
       var zeroPad = (str: string) => str.length < 2 ? '0' + str : str
       var validator = 'V:D' + this.directions.join("") + ",U" + this.units.join("") + ",T" + this.turns.join("") + ",";
-      validator += "D" + zeroPad(this.directionsCount.toString())
+      validator += ",D" + zeroPad(this.directionsCount.toString())
       validator += ",U" + zeroPad(this.unitsCount.toString())
       validator += ",T" + zeroPad(this.turnsCount.toString())
-      var actions = "";
+      var actions = ",";
       for (var action of this.actions) {
         actions += "A:" + action[0] + ",I" + zeroPad(action[1].toString()) + ",C" + zeroPad(action[2].toString()) + ",A" + zeroPad(action[3].toString()) + ","
       }
