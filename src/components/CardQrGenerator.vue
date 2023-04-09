@@ -3,6 +3,7 @@
   <div class="root">
     <div style="text-align: left; width: 100%; margin-top: 25px;">
       <h1>Create a card:</h1>
+      {{ result() }}
     </div>
     <div class="top">
       <h1>Valid Controller Settings</h1>
@@ -273,7 +274,7 @@ export default defineComponent({
           directionsCount: 1,
           turnsCount: 1,
           unitsCount: 1,
-          turns: ["1", "1", "1", "1", "1"],
+          turns: ["1", "1", "1", "1", "1", "1"],
           units: ["1", "1", "1"],
           actions: [
             [
@@ -288,6 +289,7 @@ export default defineComponent({
         this.qr.remove()
       }
       this.qr = document.createElement("canvas");
+      this.qr.setAttribute("draggable", "true")
       this.outputElem.appendChild(this.qr);
       return this.qr;
     },
@@ -353,8 +355,8 @@ export default defineComponent({
     },
     updateAction(action: number, index: number, increment: number) {
       this.actions[action][index] = Number(this.actions[action][index]) + increment;
-      if (Number(this.actions[action][index]) < 0) {
-        this.actions[action][index] = 0
+      if (Number(this.actions[action][index]) < -16) {
+        this.actions[action][index] = -16
       } else if (Number(this.actions[action][index]) > 16) {
         this.actions[action][index] = 16
       }
@@ -362,19 +364,23 @@ export default defineComponent({
     },
     result(): string {
       // Validator string: 'V:D1111,U111,T111111,DXX,UXX,TXX,'
-      // Action string: 'A:TYPE,IXX,CXX,AXX,'
-      var zeroPad = (str: string) => str.length < 2 ? '0' + str : str
-      var validator = 'V:D' + this.directions.join("") + ",U" + this.units.join("") + ",T" + this.turns.join("") + ",";
+      // Action string: 'A:TYPE,I+XX,C+XX,A+XX,'
+      var zeroPad = (str: string) => str.length < 2 ? '0' + str : str;
+      var prefix = (val: number) => val < 0 ? '-' : '+';
+      var validator = 'V:D' + this.directions.join("") + ",U" + this.units.join("") + ",T" + this.turns.join("");
       validator += ",D" + zeroPad(this.directionsCount.toString())
       validator += ",U" + zeroPad(this.unitsCount.toString())
       validator += ",T" + zeroPad(this.turnsCount.toString())
       var actions = ",";
       for (var action of this.actions) {
-        actions += "A:" + action[0] + ",I" + zeroPad(action[1].toString()) + ",C" + zeroPad(action[2].toString()) + ",A" + zeroPad(action[3].toString()) + ","
+        actions += "A:" + action[0]
+          + ",I" + prefix(Number(action[1])) + zeroPad(Math.abs(Number(action[1])).toString())
+          + ",C" + prefix(Number(action[2])) + zeroPad(Math.abs(Number(action[2])).toString())
+          + ",A" + prefix(Number(action[3])) + zeroPad(Math.abs(Number(action[3])).toString()) + ","
       }
       
       for (var add = 0; add < 3 - this.actions.length; add++) {
-        actions += "A:NULL,I00,C00,A00,"
+        actions += "A:NULL,I+00,C+00,A+00,"
       }
 
       return validator + actions;
