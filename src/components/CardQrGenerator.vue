@@ -4,6 +4,7 @@
     <div style="text-align: left; width: 100%; margin-top: 25px;">
       <h1>Create a card:</h1>
       {{ result() }}
+      {{ result().length }}
     </div>
     <div class="top">
       <h1>Valid Controller Settings</h1>
@@ -79,8 +80,8 @@
             <h2>Action {{ action }}</h2>
             Type
             <select>
-              <option @click="(actions[action-1][0] = 'MOVE') && generateQr()">Move</option>
-              <option @click="(actions[action-1][0] = 'ATCK') && generateQr()">Attack</option>
+              <option @click="(actions[action-1][0] = MOVE_ACTION) && generateQr()">Move</option>
+              <option @click="(actions[action-1][0] = ATCK_ACTION) && generateQr()">Attack</option>
             </select>
             <div class="number-selector">
               <label class="number-label">Infantry Value:</label>
@@ -272,14 +273,14 @@ export default defineComponent({
           qr: document.createElement("canvas"),
           directions: ["1", "1", "1", "1"],
           directionsCount: 1,
+          NULL_ACTION: String.fromCharCode(" ".charCodeAt(0) + 0),
+          MOVE_ACTION: String.fromCharCode(" ".charCodeAt(0) + 1),
+          ATCK_ACTION: String.fromCharCode(" ".charCodeAt(0) + 2),
           turnsCount: 1,
           unitsCount: 1,
           turns: ["1", "1", "1", "1", "1", "1"],
           units: ["1", "1", "1"],
-          actions: [
-            [
-              "MOVE", 0, 0, 0
-          ]]
+          actions: [] as any[]
       }
   },
   methods: {
@@ -295,7 +296,7 @@ export default defineComponent({
     },
     addAction()
     {
-      this.actions.push(["MOVE", 0, 0, 0])
+      this.actions.push([this.MOVE_ACTION, 0, 0, 0])
       this.generateQr()
     },
     removeAction()
@@ -363,24 +364,51 @@ export default defineComponent({
       this.generateQr()
     },
     result(): string {
-      // Validator string: 'V:D1111,U111,T111111,DXX,UXX,TXX,'
-      // Action string: 'A:TYPE,I+XX,C+XX,A+XX,'
-      var zeroPad = (str: string) => str.length < 2 ? '0' + str : str;
-      var prefix = (val: number) => val < 0 ? '-' : '+';
-      var validator = 'V:D' + this.directions.join("") + ",U" + this.units.join("") + ",T" + this.turns.join("");
-      validator += ",D" + zeroPad(this.directionsCount.toString())
-      validator += ",U" + zeroPad(this.unitsCount.toString())
-      validator += ",T" + zeroPad(this.turnsCount.toString())
-      var actions = ",";
+      // Validator string: 'DUTDUT'
+      // Action string: 'TICA'
+      var validator = "";
+      var offset = 0;
+
+      for (var i = 0; i < this.directions.length; i++) {
+        if (this.directions[i] == "1") {
+          offset += 1 << i;
+        }
+      }
+      validator += String.fromCharCode(" ".charCodeAt(0) + offset);
+
+      offset = 0;
+      for (var i = 0; i < this.units.length; i++) {
+        if (this.units[i] == "1") {
+          offset += 1 << i;
+        }
+      }
+      validator += String.fromCharCode(" ".charCodeAt(0) + offset);
+
+      offset = 0;
+      for (var i = 0; i < this.turns.length; i++) {
+        if (this.turns[i] == "1") {
+          offset += 1 << i;
+        }
+      }
+      validator += String.fromCharCode(" ".charCodeAt(0) + offset);
+
+      validator += String.fromCharCode(" ".charCodeAt(0) + this.directionsCount)
+      validator += String.fromCharCode(" ".charCodeAt(0) + this.unitsCount)
+      validator += String.fromCharCode(" ".charCodeAt(0) + this.turnsCount)
+
+      var toStr = (x: number) => String.fromCharCode(" ".charCodeAt(0) + (x < 0 ? ((x * -1) | (1 << 5)) : x));
+
+      var actions = "";
       for (var action of this.actions) {
-        actions += "A:" + action[0]
-          + ",I" + prefix(Number(action[1])) + zeroPad(Math.abs(Number(action[1])).toString())
-          + ",C" + prefix(Number(action[2])) + zeroPad(Math.abs(Number(action[2])).toString())
-          + ",A" + prefix(Number(action[3])) + zeroPad(Math.abs(Number(action[3])).toString()) + ","
+        actions += "" + action[0];
+        actions += toStr(action[1]);
+        actions += toStr(action[2]);
+        actions += toStr(action[3]);
       }
       
       for (var add = 0; add < 3 - this.actions.length; add++) {
-        actions += "A:NULL,I+00,C+00,A+00,"
+        // This is a null action
+        actions += "    ";
       }
 
       return validator + actions;
@@ -388,6 +416,7 @@ export default defineComponent({
   },
   mounted() {
     this.outputElem = document.getElementById("output") as HTMLElement
+    this.actions.push([this.MOVE_ACTION, 0, 0, 0])
     this.generateQr();
   },
   watch: {
