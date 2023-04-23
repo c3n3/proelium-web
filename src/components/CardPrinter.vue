@@ -118,7 +118,7 @@ export default defineComponent({
   name: 'CardPrinter',
   data() {
       return {
-        csvRes: {"__length__": 0},
+        csvRes: {"__length__": 0} as any,
         columns: 3,
         shouldDownload: false,
       }
@@ -134,7 +134,7 @@ export default defineComponent({
         var reader = new FileReader();
         var vm = this;
         reader.onload = e => {
-          resolve((vm.csvRes = parse(reader.result)));
+          resolve((vm.csvRes = parse(reader.result as string)));
         };
         reader.readAsText(files[0]);
       });

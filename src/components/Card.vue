@@ -64,7 +64,7 @@ export default defineComponent({
           actions: 0,
           qr: document.createElement("canvas"),
           outputElem: document.getElementById("box1-qr") as HTMLElement,
-          unique: null,
+          unique: 0,
       }
   },
   methods: {
@@ -88,22 +88,22 @@ export default defineComponent({
     download()
     {
         var self = this;
-        htmlToImage.toPng(document.getElementById('box1'))
+        htmlToImage.toPng(document.getElementById('box1') as HTMLElement)
             .then(function (dataUrl) {
-                download(dataUrl, 'card-' + self.title + '.png');
+                (download as any)(dataUrl, 'card-' + self.title + '.png');
             });
     }
   },
   created() {
-    this.unique = uid;
+    this.unique = uid as number;
     uid++
   },
   mounted() {
     var node = document.getElementById('box1');
-    this.outputElem = document.getElementById('qr-card-' + this.unique)
+    this.outputElem = document.getElementById('qr-card-' + this.unique) as HTMLElement
     this.generateQr();
 
-    htmlToImage.toPng(node)
+    htmlToImage.toPng(node as HTMLElement)
     .then(function (dataUrl) {
         var img = new Image();
         img.src = dataUrl;
@@ -112,9 +112,6 @@ export default defineComponent({
     .catch(function (error) {
         console.error('oops, something went wrong!', error);
     });
-    if (this.output) {
-        console.log("THIS WOULD PRINT")
-    }
 },
 watch: {
     output: function (old: boolean, newVal: boolean) {
