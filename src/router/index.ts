@@ -18,6 +18,11 @@ const router = createRouter({
       name: 'map-gen',
       component:  () => import('../views/Mapgen.vue')
     },
+    {
+      path: '/print',
+      name: 'print',
+      component:  () => import('../views/Print.vue')
+    },
   ]
 })
 

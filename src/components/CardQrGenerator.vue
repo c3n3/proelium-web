@@ -1,127 +1,163 @@
-<script setup lang="ts"></script>
-<template>
-  <div class="root">
-    <div style="text-align: left; width: 100%; margin-top: 25px;">
-      <h1>Create a card:</h1>
-      {{ result() }}
-      {{ result().length }}
-    </div>
-    <div class="top">
-      <h1>Valid Controller Settings</h1>
-      <div class="controller-container">
-        <div class="controller">
+<script setup lang="ts">
+import NumberSelector from '../components/NumberSelector.vue'
+</script>
 
-          <div class="controller-type">
-            <h2>Directions</h2>
-            <div class="directions">
-              <div class="row">
-                <div class="empty-item"></div>
-                <div class="dir-item" @click="changeDirections(1)" :style="dirStyle(1)">&larr;</div>
-                <div class="empty-item"></div>
-              </div>
-              <div class="row">
-                <div class="dir-item" @click="changeDirections(0)" :style="dirStyle(0)">&uarr;</div>
-                <div class="empty-item"></div>
-                <div class="dir-item" @click="changeDirections(3)" :style="dirStyle(3)">&darr;</div>
-              </div>
-              <div class="row">
-                <div class="empty-item"></div>
-                <div class="dir-item" @click="changeDirections(2)" :style="dirStyle(2)">&rarr;</div>
-                <div class="empty-item"></div>
-              </div>
-            </div>
-          </div>
-          <div class="controller-type">
-            <h2>Turns</h2>
-            <div class="turns">
-              <div class="dir-item" 
-                   v-for="turn in 5"
-                   :key="turn"
-                   :style="turnStyle(turn-1)"
-                   @click="changeTurns(turn-1)">
-                   {{ turn - 1 }}
-              </div>
-            </div>
-          </div>
-          <div class="controller-type" style="border-right: 0px;">
-            <h2>Units</h2>
-            <div class="turns">
-              <div class="dir-item" @click="changeUnits(0)" :style="unitStyle(0)">I</div>
-              <div class="dir-item" @click="changeUnits(1)" :style="unitStyle(1)">C</div>
-              <div class="dir-item" @click="changeUnits(2)" :style="unitStyle(2)">A</div>
-            </div>
-          </div>
-        </div>
-        <div class="selector-container">
-          <div class="controller-selector">
-            <label class="number-label">Direction Count:</label>
-            <div class="number-value">{{ directionsCount }}</div>
-            <div class="button" @click="changeDirCount(1)">+</div>
-            <div class="button" @click="changeDirCount(-1)">-</div>
-          </div>
-          <div class="controller-selector">
-            <label class="number-label">Turn Count:</label>
-            <div class="number-value">{{ turnsCount }}</div>
-            <div class="button" @click="changeTurnsCount(1)">+</div>
-            <div class="button" @click="changeTurnsCount(-1)">-</div>
-          </div>
-          <div class="controller-selector">
-            <label class="number-label">Unit Count:</label>
-            <div class="number-value">{{ unitsCount }}</div>
-            <div class="button" @click="changeUnitCount(1)">+</div>
-            <div class="button" @click="changeUnitCount(-1)">-</div>
-          </div>
-        </div>
+<template>
+  <div class="root-container">
+    <div class="root">
+      <div style="text-align: left; width: 100%; margin-top: 25px;">
+        <h1>Create a card:</h1>
+        {{ result() }}
+        {{ result().length }}
       </div>
-      <h1>Actions</h1>
-      <div class="actions">
-        <div class="top-action">
-          <div class="action" v-for="action in actions.length">
-            <h2>Action {{ action }}</h2>
-            Type
-            <select>
-              <option @click="(actions[action-1][0] = MOVE_ACTION) && generateQr()">Move</option>
-              <option @click="(actions[action-1][0] = ATCK_ACTION) && generateQr()">Attack</option>
-            </select>
-            <div class="number-selector">
-              <label class="number-label">Infantry Value:</label>
-              <div class="number-value">{{ actions[action-1][1] }}</div>
-              <div class="button" @click="updateAction(action-1, 1, 1)">+</div>
-              <div class="button" @click="updateAction(action-1, 1, -1)">-</div>
+      <div class="top">
+        <div class="info">
+          <h1>Information</h1>
+          Title: <textarea v-model="title"></textarea><br>
+          Description: <textarea v-model="description"></textarea>
+          <div class="button" @click="addCard()">Add</div>
+        </div>
+        <h1>Valid Controller Settings</h1>
+        <div class="controller-container">
+          <div class="controller">
+  
+            <div class="controller-type">
+              <h2>Directions</h2>
+              <div class="directions">
+                <div class="row">
+                  <div class="empty-item"></div>
+                  <div class="dir-item" @click="changeDirections(1)" :style="dirStyle(1)">&larr;</div>
+                  <div class="empty-item"></div>
+                </div>
+                <div class="row">
+                  <div class="dir-item" @click="changeDirections(0)" :style="dirStyle(0)">&uarr;</div>
+                  <div class="empty-item"></div>
+                  <div class="dir-item" @click="changeDirections(3)" :style="dirStyle(3)">&darr;</div>
+                </div>
+                <div class="row">
+                  <div class="empty-item"></div>
+                  <div class="dir-item" @click="changeDirections(2)" :style="dirStyle(2)">&rarr;</div>
+                  <div class="empty-item"></div>
+                </div>
+              </div>
             </div>
-            <div class="number-selector">
-              <label class="number-label">Cavalry Value:</label>
-              <div class="number-value">{{ actions[action-1][2] }}</div>
-              <div class="button" @click="updateAction(action-1, 2, 1)">+</div>
-              <div class="button" @click="updateAction(action-1, 2, -1)">-</div>
+            <div class="controller-type">
+              <h2>Turns</h2>
+              <div class="turns">
+                <div class="dir-item" 
+                     v-for="turn in 5"
+                     :key="turn"
+                     :style="turnStyle(turn-1)"
+                     @click="changeTurns(turn-1)">
+                     {{ turn - 1 }}
+                </div>
+              </div>
             </div>
-            <div class="number-selector">
-              <label class="number-label">Artillery Value:</label>
-              <div class="number-value">{{ actions[action-1][3] }}</div>
-              <div class="button" @click="updateAction(action-1, 3, 1)">+</div>
-              <div class="button" @click="updateAction(action-1, 3, -1)">-</div>
+            <div class="controller-type" style="border-right: 0px;">
+              <h2>Units</h2>
+              <div class="turns">
+                <div class="dir-item" @click="changeUnits(0)" :style="unitStyle(0)">I</div>
+                <div class="dir-item" @click="changeUnits(1)" :style="unitStyle(1)">C</div>
+                <div class="dir-item" @click="changeUnits(2)" :style="unitStyle(2)">A</div>
+              </div>
             </div>
           </div>
-          <div class="enable-container">
-                <div class="enable" v-if="actions.length < 3" @click="addAction()">Add Action</div>
-                <div class="disable" v-if="actions.length > 1" @click="removeAction()">Remove Action</div>
-              </div>
-          <div>
+          <div class="selector-container">
+            <div class="controller-selector">
+              <label class="number-label">Direction Count:</label>
+              <div class="number-value">{{ directionsCount }}</div>
+              <div class="button" @click="changeDirCount(1)">+</div>
+              <div class="button" @click="changeDirCount(-1)">-</div>
+            </div>
+            <div class="controller-selector">
+              <label class="number-label">Turn Count:</label>
+              <div class="number-value">{{ turnsCount }}</div>
+              <div class="button" @click="changeTurnsCount(1)">+</div>
+              <div class="button" @click="changeTurnsCount(-1)">-</div>
+            </div>
+            <div class="controller-selector">
+              <label class="number-label">Unit Count:</label>
+              <div class="number-value">{{ unitsCount }}</div>
+              <div class="button" @click="changeUnitCount(1)">+</div>
+              <div class="button" @click="changeUnitCount(-1)">-</div>
+            </div>
+          </div>
         </div>
+        <h1>Actions</h1>
+        <div class="actions">
+          <div class="top-action">
+            <div class="action" v-for="action in actions.length">
+              <h2>Action {{ action }}</h2>
+              Type
+              <select>
+                <option @click="(actions[action-1][0] = MOVE_ACTION) && generateQr()">Move</option>
+                <option @click="(actions[action-1][0] = ATCK_ACTION) && generateQr()">Attack</option>
+              </select>
+              <div class="number-selector">
+                <label class="number-label">Infantry Value:</label>
+                <div class="number-value">{{ actions[action-1][1] }}</div>
+                <div class="button" @click="updateAction(action-1, 1, 1)">+</div>
+                <div class="button" @click="updateAction(action-1, 1, -1)">-</div>
+              </div>
+              <div class="number-selector">
+                <label class="number-label">Cavalry Value:</label>
+                <div class="number-value">{{ actions[action-1][2] }}</div>
+                <div class="button" @click="updateAction(action-1, 2, 1)">+</div>
+                <div class="button" @click="updateAction(action-1, 2, -1)">-</div>
+              </div>
+              <div class="number-selector">
+                <label class="number-label">Artillery Value:</label>
+                <div class="number-value">{{ actions[action-1][3] }}</div>
+                <div class="button" @click="updateAction(action-1, 3, 1)">+</div>
+                <div class="button" @click="updateAction(action-1, 3, -1)">-</div>
+              </div>
+            </div>
+            <div class="enable-container">
+                  <div class="enable" v-if="actions.length < 3" @click="addAction()">Add Action</div>
+                  <div class="disable" v-if="actions.length > 1" @click="removeAction()">Remove Action</div>
+                </div>
+            <div>
+          </div>
+      </div>
+      </div>
+        <div id="output"></div>
+      </div>
     </div>
-    </div>
-      <div id="output"></div>
+    <div class="list">
+      <h2>
+        List of cards
+        <div class="button" @click="download">Download Csv</div>
+        <div v-for="card in cards.length" :key="card" class="card">
+          <div style="margin-right: 10px;">{{ cards[card-1].title }}</div>
+          <div class="button" @click="deleteCard(card-1)">&nbsp;Delete&nbsp;</div>
+          <NumberSelector :min="1" :max="1000" :value="1" @change="(x) => cards[card-1].count = x"></NumberSelector>
+        </div>
+      </h2>
     </div>
   </div>
 </template>
 
 <style scoped>
 
+.root-container {
+  display: flex;
+  flex-grow: 1;
+}
+
 .root {
   display: flex;
   flex-grow: 1;
   align-items: center;
   flex-direction: column;
+}
+.list {
+  width: 25%;
+}
+.card {
+  display: flex;
+}
+
+.info {
 }
 
 .controller-type {
@@ -280,6 +316,9 @@ export default defineComponent({
           unitsCount: 1,
           turns: ["1", "1", "1", "1", "1", "1"],
           units: ["1", "1", "1"],
+          title: "",
+          description: "",
+          cards: [] as any,
           actions: [] as any[]
       }
   },
@@ -412,6 +451,43 @@ export default defineComponent({
       }
 
       return validator + actions;
+    },
+    addCard()
+    {
+      var add = {"title": this.title, "description": this.description, "value": this.result(), 'count': 1};
+      console.log(add);
+      this.cards.push(add)
+    },
+    deleteCard(index: number)
+    {
+      this.cards.splice(index, 1);
+      // this.$forceUpdate()
+    },
+    generateCsv()
+    {
+      var ret = "title,description,value\n";
+      for (var i =0; i < this.cards.length; i++) {
+        var card = this.cards[i];
+        for (var length = 0; length < card.count; length++) {
+          ret += card.title + ',' + card.description + ',' + card.value + "\n"
+        }
+      }
+      return ret;
+    },
+    downloadTxt(filename: string, text: string) {
+      var element = document.createElement('a');
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+      element.setAttribute('download', filename);
+
+      element.style.display = 'none';
+      document.body.appendChild(element);
+
+      element.click();
+
+      document.body.removeChild(element);
+    },
+    download() {
+       this.downloadTxt("cards.csv", this.generateCsv())
     },
   },
   mounted() {

@@ -8,6 +8,7 @@ import { RouterLink, RouterView } from 'vue-router'
       <router-link to="/" class="top-nav-item">Rules</router-link>
       <router-link to="/card-gen" class="top-nav-item">Card creation</router-link>
       <router-link to="/map-gen" class="top-nav-item">Map creation</router-link>
+      <router-link to="/print" class="top-nav-item">Print</router-link>
     </div>
     <RouterView />
 </template>

@@ -101,6 +101,9 @@
 import { defineComponent } from 'vue'
 import * as qrcodegen from "./qrcodegen";
 
+import * as htmlToImage from 'html-to-image';
+import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
+
 export default defineComponent({
   props: ['propdata'],
   name: 'QrCreator',
