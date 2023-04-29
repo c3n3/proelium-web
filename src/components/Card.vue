@@ -10,13 +10,14 @@
     </template>
 <style scoped>
 
+
 .card {
     border: black 2px solid;
     width: 2.2in;
     height: 3.43in;
     color: black;
     background-color: white;
-    padding: 10px;
+    padding: 12px;
 }
 
 .card :hover {
@@ -24,15 +25,23 @@
 }
 
 .card-title {
+    white-space: pre-line;
     font-weight: bold;
+    line-height: 1.5;
+    text-align: center;
+    height: 50px;
 }
 
 .card-description {
     border: white 1px solid;
+    color:  #333333;
     font-weight: bold;
     margin-top: 3px;
     width: 190px;
     height: 75px;
+    white-space: pre-line;
+    line-height: 1.25;
+    overflow-wrap: break-word;
 }
 
 .qr-container {
@@ -72,7 +81,7 @@ export default defineComponent({
     {
         const errCorLvl: qrcodegen.QrCode.Ecc = qrcodegen.QrCode.Ecc.LOW;  // Error correction level
         const qr: qrcodegen.QrCode = qrcodegen.QrCode.encodeText(this.value, errCorLvl);  // Make the QR Code symbol
-        qrcodegen.drawCanvas(qr, 5, 4, "#FFFFFF", "#000000", this.appendCanvas('qr-card-' + this.unique));  // Draw it on screen
+        qrcodegen.drawCanvas(qr, 6, 1, "#FFFFFF", "#000000", this.appendCanvas('qr-card-' + this.unique));  // Draw it on screen
         // this.update = !this.update;
     },
     appendCanvas(caption: string): HTMLCanvasElement

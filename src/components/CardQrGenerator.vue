@@ -11,12 +11,6 @@ import NumberSelector from '../components/NumberSelector.vue'
         {{ result().length }}
       </div>
       <div class="top">
-        <div class="info">
-          <h1>Information</h1>
-          Title: <textarea v-model="title"></textarea><br>
-          Description: <textarea v-model="description"></textarea>
-          <div class="button" @click="addCard()">Add</div>
-        </div>
         <h1>Valid Controller Settings</h1>
         <div class="controller-container">
           <div class="controller">
@@ -124,15 +118,31 @@ import NumberSelector from '../components/NumberSelector.vue'
       </div>
     </div>
     <div class="list">
-      <h2>
-        List of cards
-        <div class="button" @click="download">Download Csv</div>
-        <div v-for="card in cards.length" :key="card" class="card">
-          <div style="margin-right: 10px;">{{ cards[card-1].title }}</div>
-          <div class="button" @click="deleteCard(card-1)">&nbsp;Delete&nbsp;</div>
-          <NumberSelector :min="1" :max="1000" :value="1" @change="(x) => cards[card-1].count = x"></NumberSelector>
+      <div class="info">
+        <h1>Information</h1>
+        <div>
+          <div>Title:</div>
+          <textarea v-model="title"></textarea><br>
         </div>
-      </h2>
+        <div>
+          <div>Description:</div>
+          <textarea v-model="description"></textarea>
+        </div>
+        <div class="button" @click="addCard()">Add to list</div>
+      </div>
+      <div>
+        <h2>
+          List of cards
+        </h2>
+        <div>
+          <div class="button" @click="download">Download Csv</div>
+          <div v-for="card in cards.length" :key="card" class="card">
+            <div style="width: 200px;">{{ cards[card-1].title }}</div>
+            <div class="button" @click="deleteCard(card-1)">&nbsp;Delete&nbsp;</div>
+            <NumberSelector :min="1" :max="1000" :value="1" @change="(x) => cards[card-1].count = x"></NumberSelector>
+          </div>
+      </div>
+      </div>
     </div>
   </div>
 </template>
@@ -152,12 +162,14 @@ import NumberSelector from '../components/NumberSelector.vue'
 }
 .list {
   width: 25%;
+  display: flex;
 }
 .card {
   display: flex;
 }
 
 .info {
+  margin-right: 100px;
 }
 
 .controller-type {
@@ -300,6 +312,9 @@ import NumberSelector from '../components/NumberSelector.vue'
 
 import { defineComponent } from 'vue'
 import * as qrcodegen from "./qrcodegen";
+
+import { parse, toString } from "./csv_parser";
+
 
 export default defineComponent({
   name: 'CardQrGenerator',
@@ -465,14 +480,7 @@ export default defineComponent({
     },
     generateCsv()
     {
-      var ret = "title,description,value\n";
-      for (var i =0; i < this.cards.length; i++) {
-        var card = this.cards[i];
-        for (var length = 0; length < card.count; length++) {
-          ret += card.title + ',' + card.description + ',' + card.value + "\n"
-        }
-      }
-      return ret;
+      return toString(this.cards);
     },
     downloadTxt(filename: string, text: string) {
       var element = document.createElement('a');

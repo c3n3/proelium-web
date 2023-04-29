@@ -5,25 +5,30 @@ import NumberSelector from '../components/NumberSelector.vue'
 
 
 <template>
-    <div class="input-items">
-        <input type="file" @change="onDrop">
-        <NumberSelector :min="1" :max="10" :value="3" @change="(x) => columns = x"></NumberSelector>
-        <div class="button" @click="downloadAll()">Download all</div>
+  <div class="input-items">
+    <div>
+      <div>
+        Upload Deck:
+      </div>
+      <input type="file" @change="onDrop">
     </div>
-    <div id="section-to-print">
-        <div v-for="row in rows" class="row" :key="row">
-            <div v-for="card in columns" :key="card">
-                <Card
-                    v-if="(card - 1) + (row-1) * columns < csvRes.__length__"
-                    :title="csvRes['title'][(card - 1) + (row-1) * columns]"
-                    :description="csvRes['description'][(card - 1) + (row-1) * columns]"
-                    :value="csvRes['value'][(card - 1) + (row-1) * columns]"
-                    :output="shouldDownload"
-                ></Card>
-            </div>
-        </div>
+    <div class="selectors">
+      Columns: <NumberSelector :min="1" :max="10" :value="3" @change="(x) => columns = x"></NumberSelector>
+      Rows per page: <NumberSelector :min="1" :max="10" :value="3" @change="(x) => rowsPerPage = x"></NumberSelector>
     </div>
-
+    <div class="button" @click="downloadAll()">Download all</div>
+  </div>
+  <div id="section-to-print">
+    <div class="row pagebreak">Do not print this page</div>
+    <div v-for="row in rows" :class="'row ' + ((row % rowsPerPage) == 0 ? 'pagebreak' : '')" :key="row">
+      <div v-for="card in columns" :key="card">
+        <Card v-if="(card - 1) + (row - 1) * columns < csvRes.length"
+        :title="csvRes[(card - 1) + (row - 1) * columns]['title']"
+        :description="csvRes[(card - 1) + (row - 1) * columns]['description']"
+        :value="csvRes[(card - 1) + (row - 1) * columns]['value']" :output="shouldDownload"></Card>
+      </div>
+    </div>
+  </div>
 </template>
 
 
@@ -33,11 +38,16 @@ import NumberSelector from '../components/NumberSelector.vue'
   color: black;
 }
 
+@page {
+  size: auto;
+  margin-top: 15px;
+}
+
 @media print {
-    .pagebreak {
-        clear: both;
-        page-break-after: always;
-    }
+  .pagebreak {
+    clear: both;
+    page-break-after: always;
+  }
 }
 
 .button {
@@ -46,7 +56,10 @@ import NumberSelector from '../components/NumberSelector.vue'
   margin: 5px;
   text-align: center;
   min-width: 30px;
-  user-select: none; /* Standard syntax */
+  padding: 4px;
+  height: 70%;
+  user-select: none;
+  /* Standard syntax */
 }
 
 
@@ -64,44 +77,43 @@ import NumberSelector from '../components/NumberSelector.vue'
 }
 
 .input-items {
-    display: flex;
-
+  display: flex;
 }
 
 .row {
-    display: flex;
+  display: flex;
 }
 
 .card {
-    border: black 2px solid;
-    width: 2.2in;
-    height: 3.43in;
-    color: black;
-    background-color: white;
-    padding: 10px;
+  border: black 2px solid;
+  width: 2.2in;
+  height: 3.43in;
+  color: black;
+  background-color: white;
+  padding: 10px;
 }
 
 .card :hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .card-title {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .card-description {
-    border: white 1px solid;
-    font-weight: bold;
-    margin-top: 3px;
-    width: 190px;
-    height: 75px;
+  border: white 1px solid;
+  font-weight: bold;
+  margin-top: 3px;
+  width: 190px;
+  height: 75px;
 }
 
 .qr-container {
-    display: flex;
-    margin-top: 10px;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  margin-top: 10px;
+  justify-content: center;
+  align-items: center;
 }
 </style>
 
@@ -117,24 +129,25 @@ import Card from '../components/Card.vue'
 export default defineComponent({
   name: 'CardPrinter',
   data() {
-      return {
-        csvRes: {"__length__": 0} as any,
-        columns: 3,
-        shouldDownload: false,
-      }
+    return {
+      csvRes: [] as any,
+      columns: 3,
+      rowsPerPage: 3,
+      shouldDownload: false,
+      fileIn: [] as any,
+    }
   },
   methods: {
-    onDrop(e: any)
-    {
-        var files = e.target.files || e.dataTransfer.files;
-        if (!files.length) {
-            return;
-        }
-        let promise = new Promise((resolve, reject) => {
+    onDrop(e: any) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) {
+        return;
+      }
+      let promise = new Promise((resolve, reject) => {
         var reader = new FileReader();
         var vm = this;
         reader.onload = e => {
-          resolve((vm.csvRes = parse(reader.result as string)));
+          resolve((vm.fileIn = parse(reader.result as string)));
         };
         reader.readAsText(files[0]);
       });
@@ -142,28 +155,33 @@ export default defineComponent({
       promise.then(
         result => {
           /* handle a successful result */
-          console.log(this.csvRes);
+          console.log("Converting", this.fileIn);
+          this.csvRes = [] as any;
+          for (var i = 0; i < this.fileIn.length; i++) {
+            for (var j = 0; j < Number(this.fileIn[i].count); j++) {
+              this.csvRes.push(this.fileIn[i])
+            }
+          }
+          console.log("Result = ", this.csvRes)
         },
         error => {
-          /* handle an error */ 
+          /* handle an error */
           console.log(error);
         }
       );
     },
     updateColumn(x: number) {
-        this.columns = x;
+      this.columns = x;
     },
-    update(e: any)
-    {
-        this.$forceUpdate();
+    update(e: any) {
+      this.$forceUpdate();
     },
-    downloadAll()
-    {
-        this.shouldDownload = true;
-        var self = this;
-        setTimeout(function() {
-				self.shouldDownload = false;
-        }, 500)
+    downloadAll() {
+      this.shouldDownload = true;
+      var self = this;
+      setTimeout(function () {
+        self.shouldDownload = false;
+      }, 500)
     }
 
   },
@@ -173,11 +191,10 @@ export default defineComponent({
     console.log("mount")
   },
   computed: {
-    rows()
-    {
-        var ret = Math.ceil(this.csvRes.__length__ / this.columns);
-        console.log("Rows", ret)
-        return ret
+    rows() {
+      var ret = Math.ceil(this.csvRes.length / this.columns);
+      console.log("Rows", ret)
+      return ret
     }
   }
 })
