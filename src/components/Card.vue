@@ -1,8 +1,8 @@
 <script setup lang="ts"></script>
     <template>
-        <div @click="download()" id="box1" class="card">
-            <h3 class="card-title">{{title}}</h3>
-            <p class="card-description">{{description}}</p>
+        <div @click="download()" id="box1" class="card" :style="physicalStyle()">
+            <h3 class="card-title" :style="titleStyle()">{{title}}</h3>
+            <p class="card-description" :style="descriptionStyle()">{{description}}</p>
             <div class="qr-container">
                 <div :id="'qr-card-' + unique"></div>
             </div>
@@ -13,11 +13,12 @@
 
 .card {
     border: black 2px solid;
-    width: 2.2in;
-    height: 3.43in;
     color: black;
     background-color: white;
-    padding: 12px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
 }
 
 .card :hover {
@@ -27,20 +28,15 @@
 .card-title {
     white-space: pre-line;
     font-weight: bold;
-    line-height: 1.5;
     text-align: center;
-    height: 50px;
+    flex-grow: 1;
 }
 
 .card-description {
     border: white 1px solid;
     color:  #333333;
     font-weight: bold;
-    margin-top: 3px;
-    width: 190px;
-    height: 75px;
     white-space: pre-line;
-    line-height: 1.25;
     overflow-wrap: break-word;
 }
 
@@ -67,13 +63,14 @@ import * as download from 'downloadjs'
 
 export default defineComponent({
   name: 'Card',
-  props: ['title', 'description', 'value', 'length', 'width', 'output'],
+  props: ['title', 'description', 'value', 'baseheight', 'basewidth', 'output'],
   data() {
       return {
           actions: 0,
           qr: document.createElement("canvas"),
           outputElem: document.getElementById("box1-qr") as HTMLElement,
           unique: 0,
+          scale: 1,
       }
   },
   methods: {
@@ -81,7 +78,7 @@ export default defineComponent({
     {
         const errCorLvl: qrcodegen.QrCode.Ecc = qrcodegen.QrCode.Ecc.LOW;  // Error correction level
         const qr: qrcodegen.QrCode = qrcodegen.QrCode.encodeText(this.value, errCorLvl);  // Make the QR Code symbol
-        qrcodegen.drawCanvas(qr, 6, 1, "#FFFFFF", "#000000", this.appendCanvas('qr-card-' + this.unique));  // Draw it on screen
+        qrcodegen.drawCanvas(qr, 6*this.scale, 1, "#FFFFFF", "#000000", this.appendCanvas('qr-card-' + this.unique));  // Draw it on screen
         // this.update = !this.update;
     },
     appendCanvas(caption: string): HTMLCanvasElement
@@ -94,10 +91,34 @@ export default defineComponent({
       this.outputElem.appendChild(this.qr);
       return this.qr;
     },
+    physicalStyle()
+    {
+        return `padding: ${this.margin}in;
+        width: ${this.width}in;
+        height: ${this.height}in;
+        `
+    },
+    titleStyle()
+    {
+        return `    margin-top: ${0.1*this.scale}in;
+        width: ${this.width*3/4}in;
+        height: ${this.width*1/6}in;
+        font-size: ${0.17*this.scale}in;
+        line-height: ${1.25*this.scale};`
+    },
+    descriptionStyle()
+    {
+        return `    margin-top: ${0.1*this.scale}in;
+        width: ${this.width*3/4}in;
+        height: ${this.width*2/6}in;
+        font-size: ${0.14*this.scale}in;
+        line-height: ${1.25*this.scale};`
+    },
     download()
     {
         var self = this;
-        htmlToImage.toPng(document.getElementById('box1') as HTMLElement)
+        htmlToImage.toPng(document.getElementById('box1') as HTMLElement,
+                    {'canvasWidth': 732, 'canvasHeight': 1101})
             .then(function (dataUrl) {
                 (download as any)(dataUrl, 'card-' + self.title + '.png');
             });
@@ -128,6 +149,17 @@ watch: {
             this.download()
         }
     }
-  }
+  },
+  computed: {
+    width() : number {
+        return 2.2 * this.scale;
+    },
+    height() : number {
+        return 3.43 * this.scale;
+    },
+    margin() {
+        return 0.15 * this.scale;
+    },
+  },
 })
 </script>

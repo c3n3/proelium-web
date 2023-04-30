@@ -40,7 +40,7 @@ import NumberSelector from '../components/NumberSelector.vue'
 
 @page {
   size: auto;
-  margin-top: 15px;
+  margin-top: 20px;
 }
 
 @media print {
@@ -82,15 +82,6 @@ import NumberSelector from '../components/NumberSelector.vue'
 
 .row {
   display: flex;
-}
-
-.card {
-  border: black 2px solid;
-  width: 2.2in;
-  height: 3.43in;
-  color: black;
-  background-color: white;
-  padding: 10px;
 }
 
 .card :hover {
