@@ -86,6 +86,7 @@ import NumberSelector from '../components/NumberSelector.vue'
               <select>
                 <option @click="(actions[action-1][0] = MOVE_ACTION) && generateQr()">Move</option>
                 <option @click="(actions[action-1][0] = ATCK_ACTION) && generateQr()">Attack</option>
+                <option @click="(actions[action-1][0] = SUICIDE_ACTION) && generateQr()">Suicide</option>
               </select>
               <div class="number-selector">
                 <label class="number-label">Infantry Value:</label>
@@ -327,6 +328,7 @@ export default defineComponent({
           NULL_ACTION: String.fromCharCode(" ".charCodeAt(0) + 0),
           MOVE_ACTION: String.fromCharCode(" ".charCodeAt(0) + 1),
           ATCK_ACTION: String.fromCharCode(" ".charCodeAt(0) + 2),
+          SUICIDE_ACTION: String.fromCharCode(" ".charCodeAt(0) + 3),
           turnsCount: 1,
           unitsCount: 1,
           turns: ["1", "1", "1", "1", "1", "1"],
@@ -383,7 +385,7 @@ export default defineComponent({
     },
     changeDirCount(increment: number) {
       this.directionsCount += increment;
-      this.directionsCount = this.limit(this.directionsCount, 1, 4)
+      this.directionsCount = this.limit(this.directionsCount, 0, 4)
       this.generateQr();
     },
     changeUnitCount(increment: number) {

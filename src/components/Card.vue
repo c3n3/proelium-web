@@ -14,7 +14,6 @@
 .card {
     border: black 2px solid;
     color: black;
-    background-color: white;
     justify-content: center;
     align-items: center;
     display: flex;
@@ -33,7 +32,6 @@
 }
 
 .card-description {
-    border: white 1px solid;
     color:  #333333;
     font-weight: bold;
     white-space: pre-line;
@@ -78,7 +76,7 @@ export default defineComponent({
     {
         const errCorLvl: qrcodegen.QrCode.Ecc = qrcodegen.QrCode.Ecc.LOW;  // Error correction level
         const qr: qrcodegen.QrCode = qrcodegen.QrCode.encodeText(this.value, errCorLvl);  // Make the QR Code symbol
-        qrcodegen.drawCanvas(qr, 6*this.scale, 1, "#FFFFFF", "#000000", this.appendCanvas('qr-card-' + this.unique));  // Draw it on screen
+        qrcodegen.drawCanvas(qr, 6*this.scale, 1, this.backColor(), "#000000", this.appendCanvas('qr-card-' + this.unique));  // Draw it on screen
         // this.update = !this.update;
     },
     appendCanvas(caption: string): HTMLCanvasElement
@@ -91,11 +89,21 @@ export default defineComponent({
       this.outputElem.appendChild(this.qr);
       return this.qr;
     },
+    backColor()
+    {
+        return 'white';
+    },
+    borderColor()
+    {
+        return 'black';
+    },
     physicalStyle()
     {
         return `padding: ${this.margin}in;
         width: ${this.width}in;
         height: ${this.height}in;
+        background-color: ${this.backColor()};
+        border: 5px solid ${this.borderColor()};
         `
     },
     titleStyle()
