@@ -1,6 +1,6 @@
 <script setup lang="ts"></script>
     <template>
-        <div @click="download()" id="box1" class="card" :style="physicalStyle()">
+        <div @click="download()" :id="'card-' + unique" class="card" :style="physicalStyle()">
             <h3 class="card-title" :style="titleStyle()">{{title}}</h3>
             <p class="card-description" :style="descriptionStyle()">{{description}}</p>
             <div class="qr-container">
@@ -59,6 +59,19 @@ import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
 
 import * as download from 'downloadjs'
 
+
+function hash(str: string) {
+  var hash = 0,
+    i, chr;
+  if (str.length === 0) return hash;
+  for (i = 0; i < str.length; i++) {
+    chr = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+}
+
 export default defineComponent({
   name: 'Card',
   props: ['title', 'description', 'value', 'baseheight', 'basewidth', 'output'],
@@ -95,7 +108,12 @@ export default defineComponent({
     },
     borderColor()
     {
-        return 'black';
+        // return "black";
+        return "white";
+        // return "#784a21"; // copper
+        // return "#5d64b1"; // settings
+        // return '#baaa25'; // gold
+        // return '#a7a7a7'; // silver
     },
     physicalStyle()
     {
@@ -103,8 +121,9 @@ export default defineComponent({
         width: ${this.width}in;
         height: ${this.height}in;
         background-color: ${this.backColor()};
-        border: 5px solid ${this.borderColor()};
+        border: 2px solid ${this.borderColor()};
         `
+        // border: 20px solid ${this.borderColor()};
     },
     titleStyle()
     {
@@ -125,10 +144,10 @@ export default defineComponent({
     download()
     {
         var self = this;
-        htmlToImage.toPng(document.getElementById('box1') as HTMLElement,
+        htmlToImage.toPng(document.getElementById('card-' + this.unique) as HTMLElement,
                     {'canvasWidth': 732, 'canvasHeight': 1101})
             .then(function (dataUrl) {
-                (download as any)(dataUrl, 'card-' + self.title + '.png');
+                (download as any)(dataUrl, 'card-' + self.title + '-' + self.unique + '-' + hash(self.description + self.value) + '.png');
             });
     }
   },
@@ -160,7 +179,7 @@ watch: {
   },
   computed: {
     width() : number {
-        return 2.2 * this.scale;
+        return 2.2804 * this.scale;
     },
     height() : number {
         return 3.43 * this.scale;
