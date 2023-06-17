@@ -1,0 +1,8 @@
+title|description|value|count
+Fire Everything|Attack with all units|/'_!#!""!$        |2
+Infantry Long Shot|Attack 3 spaces with the infantry|/!_!!!"#          |2
+Cavalry Charge|Move 2 spaces and then attack with the cavalry|/"_!!!! " " !     |3
+Move Everything|Move all units 2 spaces|/'_!#!!"""        |4
+Volley|Attack 2 turns with the artillery|/$_!!""  $        |2
+Really Long Move|Move:{~}Infantry: 5{~}Cavalry: 7{~}Artillery: 4|/'_!!!!%'$        |2
+Infantry Double Shot|Attack 2 directions with the infantry|/!_"!!""          |2

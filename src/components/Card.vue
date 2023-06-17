@@ -89,7 +89,7 @@ export default defineComponent({
     {
         const errCorLvl: qrcodegen.QrCode.Ecc = qrcodegen.QrCode.Ecc.LOW;  // Error correction level
         const qr: qrcodegen.QrCode = qrcodegen.QrCode.encodeText(this.value, errCorLvl);  // Make the QR Code symbol
-        qrcodegen.drawCanvas(qr, 6*this.scale, 1, this.backColor(), "#000000", this.appendCanvas('qr-card-' + this.unique));  // Draw it on screen
+        qrcodegen.drawCanvas(qr, this.scale*3, 1, this.backColor(), "#000000", this.appendCanvas('qr-card-' + this.unique));  // Draw it on screen
         // this.update = !this.update;
     },
     appendCanvas(caption: string): HTMLCanvasElement
@@ -108,8 +108,8 @@ export default defineComponent({
     },
     borderColor()
     {
-        // return "black";
-        return "white";
+        return "black";
+        // return "white";
         // return "#784a21"; // copper
         // return "#5d64b1"; // settings
         // return '#baaa25'; // gold
@@ -130,7 +130,7 @@ export default defineComponent({
         return `    margin-top: ${0.1*this.scale}in;
         width: ${this.width*3/4}in;
         height: ${this.width*1/6}in;
-        font-size: ${0.17*this.scale}in;
+        font-size: ${0.125*this.scale}in;
         line-height: ${1.25*this.scale};`
     },
     descriptionStyle()
@@ -138,7 +138,7 @@ export default defineComponent({
         return `    margin-top: ${0.1*this.scale}in;
         width: ${this.width*3/4}in;
         height: ${this.width*2/6}in;
-        font-size: ${0.14*this.scale}in;
+        font-size: ${0.11*this.scale}in;
         line-height: ${1.25*this.scale};`
     },
     download()
@@ -179,10 +179,10 @@ watch: {
   },
   computed: {
     width() : number {
-        return 2.2804 * this.scale;
+        return 1.25 * this.scale;
     },
     height() : number {
-        return 3.43 * this.scale;
+        return 1.75 * this.scale;
     },
     margin() {
         return 0.15 * this.scale;

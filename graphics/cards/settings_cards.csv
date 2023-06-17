@@ -1,0 +1,12 @@
+title|description|value|count
+Setting|Two player free for all|200000006|1
+Setting|Team 1: P1, P3{~}Team 2: P2, P4|200000010|1
+Setting|Four player free for all|200000008|1
+Setting|Two cards per turn|200000014|1
+Setting|Three player free for all|200000007|1
+Setting|One card per turn|200000013|1
+Setting|Team 1: P1{~}Team 2: P2, P3, P4|200000011|1
+Setting|Team 1: P1, P2{~}Team 2: P3, P4|200000009|1
+Setting|Three cards per turn|200000015|1
+Setting|Team 1: P1, P2{~}Team 2: P3|200000012|1
+Start|Once all settings are in place, use this to start the game|200000016|1

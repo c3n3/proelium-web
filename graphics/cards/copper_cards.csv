@@ -1,0 +1,13 @@
+title|description|value|count
+Cavalry Attack|Attack 1 space with the cavalry|/"_!!!" !         |4
+Infantry Attack|Attack 2 spaces with the infantry|/!_!!!""          |4
+Artillery Attack|Attack 4 spaces with the artillery|/$_!!!"  $        |4
+Short Move|Move:{~}Infantry: 1{~}Cavalry: 2{~}Artillery: 1|/'_!!!!!"!        |5
+Move|Move:{~}Infantry: 3{~}Cavalry: 4{~}Artillery: 2|/'_!!!!#$"        |8
+Long Move|Move:{~}Infantry: 4{~}Cavalry: 6{~}Artillery: 3|/'_!!!!$&#        |5
+Long haul|Move the artillery 4 spaces|/$_!!!!  $        |3
+Double Move|Move 2 turns:{~}Infantry: 2{~}Cavalry: 2{~}Artillery: 1|/'_!!"!""!        |6
+Long Double Move|Move 2 turns:{~}Infantry: 3{~}Cavalry: 3{~}Artillery: 2|/'_!!"!##"        |6
+Selective Attack|Select a troop to attack with|/'_!!!""!$        |10
+Coordinated Attack|Select 2 unit types to attack with|/'_!"!""!$        |3
+Fire Everything|Attack with all units|/'_!#!""!$        |1
