@@ -2,6 +2,9 @@
 
 This template should help get you started developing with Vue 3 in Vite.
 
+## Node JS Version Install on Ubuntu Machine
+curl -fsSl https://deb/nodesource.com/setup_current.x | sudo -E bash -; sudo apt-get install -y nodejs
+
 ## Recommended IDE Setup
 
 [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
