@@ -4,8 +4,8 @@
 
 <template>
   <div class="number-selector">
-      <label class="number-label">{{name}}:</label>
-      <div class="number-value">{{ v }}</div>
+      <label v-if="name != undefined" class="number-label">{{name}}:</label>
+      <div v-if="shouldDisplay" class="number-value">{{ v }}</div>
       <div class="button" @click="update(1)">+</div>
       <div class="button" @click="update(-1)">-</div>
   </div>
@@ -19,11 +19,12 @@
 }
 
 .button {
+  font-size: large;
   background-color: darkslateblue;
   border: 1px solid whitesmoke;
   margin: 5px;
   text-align: center;
-  min-width: 30px;
+  min-width: 25px;
   user-select: none; /* Standard syntax */
 }
 
@@ -57,12 +58,14 @@ export default defineComponent({
   name: 'NumberSelector',
   props: {
     min: Number,
+    display: Boolean,
     max: Number,
     name: String,
     value: Number
   },
   data() {
       return {
+        shouldDisplay: this.display != undefined ? this.display : true,
         csvRes: {"__length__": 0},
         columns: 3,
         v: Number(this.value)
