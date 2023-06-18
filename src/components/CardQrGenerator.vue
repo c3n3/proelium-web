@@ -378,7 +378,6 @@ export default defineComponent({
       const errCorLvl: qrcodegen.QrCode.Ecc = qrcodegen.QrCode.Ecc.LOW;  // Error correction level
       const qr: qrcodegen.QrCode = qrcodegen.QrCode.encodeText(this.result(), errCorLvl);  // Make the QR Code symbol
       qrcodegen.drawCanvas(qr, 10, 4, "#FFFFFF", "#000000", this.appendCanvas("hello-world-QR"));  // Draw it on screen
-      // this.update = !this.update;
     },
     limit(val: number, min: number, max: number): number {
       return val < min ? min : val > max ? max : val;
