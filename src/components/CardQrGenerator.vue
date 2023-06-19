@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import NumberSelector from '../components/NumberSelector.vue'
+import Deck from '../components/Deck.vue'
+
 </script>
 
 <template>
@@ -39,7 +41,7 @@ import NumberSelector from '../components/NumberSelector.vue'
               <h2>Turns</h2>
               <div class="turns">
                 <div class="dir-item" 
-                     v-for="turn in 5"
+                     v-for="turn in turns.length"
                      :key="turn"
                      :style="turnStyle(turn-1)"
                      @click="changeTurns(turn-1)">
@@ -58,22 +60,28 @@ import NumberSelector from '../components/NumberSelector.vue'
           </div>
           <div class="selector-container">
             <div class="controller-selector">
-              <label class="number-label">Direction Count:</label>
-              <div class="number-value">{{ directionsCount }}</div>
-              <div class="button" @click="changeDirCount(1)">+</div>
-              <div class="button" @click="changeDirCount(-1)">-</div>
+              <div class="selector-outline">
+                <label class="number-label">Direction Count:</label>
+                <div class="number-value">{{ directionsCount }}</div>
+                <div class="button" @click="changeDirCount(1)">+</div>
+                <div class="button" @click="changeDirCount(-1)">-</div>
+              </div>
             </div>
             <div class="controller-selector">
-              <label class="number-label">Turn Count:</label>
-              <div class="number-value">{{ turnsCount }}</div>
-              <div class="button" @click="changeTurnsCount(1)">+</div>
-              <div class="button" @click="changeTurnsCount(-1)">-</div>
+              <div class="selector-outline">
+                <label class="number-label">Turn Count:</label>
+                <div class="number-value">{{ turnsCount }}</div>
+                <div class="button" @click="changeTurnsCount(1)">+</div>
+                <div class="button" @click="changeTurnsCount(-1)">-</div>
+              </div>
             </div>
             <div class="controller-selector">
-              <label class="number-label">Unit Count:</label>
-              <div class="number-value">{{ unitsCount }}</div>
-              <div class="button" @click="changeUnitCount(1)">+</div>
-              <div class="button" @click="changeUnitCount(-1)">-</div>
+              <div class="selector-outline">
+                <label class="number-label">Unit Count:</label>
+                <div class="number-value">{{ unitsCount }}</div>
+                <div class="button" @click="changeUnitCount(1)">+</div>
+                <div class="button" @click="changeUnitCount(-1)">-</div>
+              </div>
             </div>
           </div>
         </div>
@@ -83,7 +91,7 @@ import NumberSelector from '../components/NumberSelector.vue'
             <div class="action" v-for="action in actions.length">
               <h2>Action {{ action }}</h2>
               Type
-              <select>
+              <select :value="actionToName[actions[action-1][0]] + ''">
                 <option @click="(actions[action-1][0] = MOVE_ACTION) && generateQr()">Move</option>
                 <option @click="(actions[action-1][0] = ATCK_ACTION) && generateQr()">Attack</option>
                 <option @click="(actions[action-1][0] = SUICIDE_ACTION) && generateQr()">Suicide</option>
@@ -119,40 +127,43 @@ import NumberSelector from '../components/NumberSelector.vue'
       </div>
     </div>
     <div class="list">
-      <div class="info">
-        <h1>Information</h1>
-        <div>
-          <div>Title:</div>
-          <textarea v-model="title"></textarea><br>
-        </div>
-        <div>
-          <div>Description:</div>
-          <textarea v-model="description"></textarea>
-        </div>
-        <div class="button" @click="addCard()">Add to list</div>
-      </div>
-      <div>
-        <h2>
-          List of cards
-        </h2>
-        <div>
-          <div class="button" @click="download">Download Csv</div>
-          <div v-for="card in cards.length" :key="card" class="card">
-            <div style="width: 200px;">{{ cards[card-1].title }}</div>
-            <div class="button" @click="deleteCard(card-1)">&nbsp;Delete&nbsp;</div>
-            <NumberSelector :min="1" :max="1000" :value="1" @change="(x) => cards[card-1].count = x"></NumberSelector>
+        <div class="info">
+          <h1 v-if="modifyCard  == -1">Add card</h1>
+          <h1 v-if="modifyCard != -1">Modify card</h1>
+          
+          <div>
+            <div>Title:</div>
+            <textarea v-model="title"></textarea><br>
           </div>
-      </div>
+          <div>
+            <div>Description:</div>
+            <textarea v-model="description"></textarea>
+          </div>
+          <div class="button" @click="addCard()">Done</div>
+        </div>
+        <div class="deck">
+          <h1>Map deck</h1>
+          <Deck :cards="cards" @modify="modify" @remove="deleteCard"></Deck>
+          <h3 class="upload-title">Upload a card deck</h3>
+          <input type="file" @change="onDrop">
+        </div>
       </div>
     </div>
-  </div>
 </template>
 
 <style scoped>
 
+
+.top {
+  display: flex;
+  width: 100%;
+}
+
 .root-container {
   display: flex;
   flex-grow: 1;
+  padding-right: 5%;
+  padding-left: 5%;
 }
 
 .root {
@@ -161,9 +172,27 @@ import NumberSelector from '../components/NumberSelector.vue'
   align-items: center;
   flex-direction: column;
 }
+
+.upload-title {
+  margin-top: 15px;
+  border-top: 10px solid whitesmoke;
+  padding-top: 10px;
+}
+
+.info {
+  margin: 25px;
+  border-bottom: solid whitesmoke 10px;
+  padding: 15px;
+}
+
 .list {
-  width: 25%;
   display: flex;
+  flex-direction: column;
+  width: 25%;
+}
+
+.deck {
+  margin-left: 25px;
 }
 .card {
   display: flex;
@@ -186,7 +215,6 @@ import NumberSelector from '../components/NumberSelector.vue'
 }
 
 .number-value {
-  min-width: 25px;
   text-align: center;
 }
 
@@ -211,8 +239,17 @@ import NumberSelector from '../components/NumberSelector.vue'
 .controller-selector {
   display: flex;
   margin: 15px;
-  padding: 5px;
+  /* padding: 5px; */
+  width: 33%;
+  justify-content: center;
+}
+
+.selector-outline {
+  display: flex;
+  /* margin: 15px; */
+  padding: 10px;
   border: 1px solid whitesmoke;
+  justify-content: center;
 }
 
 .number-selector {
@@ -306,6 +343,7 @@ import NumberSelector from '../components/NumberSelector.vue'
 
 .controller-container {
   border-bottom: 1px solid darkslateblue;
+  width: 100%;
 }
 
 </style>
@@ -329,7 +367,9 @@ export default defineComponent({
           MOVE_ACTION: String.fromCharCode(" ".charCodeAt(0) + 1),
           ATCK_ACTION: String.fromCharCode(" ".charCodeAt(0) + 2),
           SUICIDE_ACTION: String.fromCharCode(" ".charCodeAt(0) + 3),
+          actionToName: {} as any,
           turnsCount: 1,
+          modifyCard: -1,
           unitsCount: 1,
           turns: ["1", "1", "1", "1", "1", "1"],
           units: ["1", "1", "1"],
@@ -418,6 +458,27 @@ export default defineComponent({
       }
       this.generateQr()
     },
+    getBoolFromChar(str: string, bit: number) {
+      var num = (str.charCodeAt(0) - " ".charCodeAt(0));
+      for (var i = 0; i < 4; i++) {
+        console.log((num & (1 << bit))!=0?"1":"0")
+      }
+      console.log("value", num)
+      return (num & (1 << bit)) != 0;
+    },
+    getNumberFromChar(str: string): number {
+      var toNum = (x: number) => String.fromCharCode(" ".charCodeAt(0) + (x < 0 ? ((x * -1) | (1 << 5)) : x));
+      var ret = str.charCodeAt(0) - " ".charCodeAt(0);
+
+      if (ret & (1 << 5)) {
+        // We have a negative
+        ret = ret & (~(1 << 5));
+        ret = ret * -1
+      }
+
+      console.log(str, "=", ret)
+      return ret;
+    },
     result(): string {
       // Validator string: 'DUTDUT'
       // Action string: 'TICA'
@@ -470,9 +531,16 @@ export default defineComponent({
     },
     addCard()
     {
-      var add = {"title": this.title, "description": this.description, "value": this.result(), 'count': 1};
-      console.log(add);
-      this.cards.push(add)
+      var value = this.result();
+      if (this.modifyCard == -1) {
+        var add = {"title": this.title, "description": this.description, "value": value, 'count': 1};
+        console.log(add);
+        this.cards.push(add)
+      } else {
+        this.cards[this.modifyCard].title = this.title
+        this.cards[this.modifyCard].description = this.description
+        this.cards[this.modifyCard].value = value
+      }
     },
     deleteCard(index: number)
     {
@@ -482,6 +550,64 @@ export default defineComponent({
     generateCsv()
     {
       return toString(this.cards);
+    },
+    onDrop(e: any) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) {
+        return;
+      }
+      let promise = new Promise((resolve, reject) => {
+        var reader = new FileReader();
+        var vm = this;
+        reader.onload = e => {
+          resolve((vm.cards = parse(reader.result as string)));
+        };
+        reader.readAsText(files[0]);
+      });
+    },
+    modify(index: number)
+    {
+      console.log("Modify", this.cards[index].value)
+      this.modifyCard = index
+      this.title = this.cards[index].title
+      this.description = this.cards[index].description
+      var strindex = 0;
+      for (var i = 0; i < this.directions.length; i++) {
+        this.directions[i] = this.getBoolFromChar(this.cards[index].value[strindex], i) ? "1" : "0";
+      }
+      strindex++;
+      for (var i = 0; i < this.units.length; i++) {
+        this.units[i] = this.getBoolFromChar(this.cards[index].value[strindex], i) ? "1" : "0";
+      }
+      strindex++;
+      for (var i = 0; i < this.turns.length; i++) {
+        this.turns[i] = this.getBoolFromChar(this.cards[index].value[strindex], i) ? "1" : "0";
+      }
+      strindex++;
+      this.directionsCount = this.getNumberFromChar(this.cards[index].value[strindex]);
+      strindex++;
+      this.unitsCount = this.getNumberFromChar(this.cards[index].value[strindex]);
+      strindex++;
+      this.turnsCount = this.getNumberFromChar(this.cards[index].value[strindex]);
+      strindex++;
+
+      // 3 actions
+      for (var i = 0; i < 3; i++) {
+        // Ignore null actions
+        if (this.cards[index].value[strindex] == " ") {
+          break;
+        }
+        this.actions[i][0] = this.cards[index].value[strindex];
+        strindex++;
+        this.actions[i][1] = this.getNumberFromChar(this.cards[index].value[strindex]);
+        strindex++;
+        this.actions[i][2] = this.getNumberFromChar(this.cards[index].value[strindex]);
+        strindex++;
+        this.actions[i][3] = this.getNumberFromChar(this.cards[index].value[strindex]);
+        strindex++;
+      }
+      this.$forceUpdate()
+      this.generateQr()
     },
     downloadTxt(filename: string, text: string) {
       var element = document.createElement('a');
@@ -502,6 +628,9 @@ export default defineComponent({
   mounted() {
     this.outputElem = document.getElementById("output") as HTMLElement
     this.actions.push([this.MOVE_ACTION, 0, 0, 0])
+    this.actionToName[this.MOVE_ACTION] = "Move"
+    this.actionToName[this.ATCK_ACTION] = "Attack"
+    this.actionToName[this.SUICIDE_ACTION] = "Suicide"
     this.generateQr();
   },
   watch: {
