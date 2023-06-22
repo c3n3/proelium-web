@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import QrCreator from '../components/QrCreator.vue'
+import Rules from '../components/Rules.vue'
 </script>
 
 
 <template>
   <div class="container">
-    Rules
+    <Rules></Rules>
   </div>
 </template>
 
