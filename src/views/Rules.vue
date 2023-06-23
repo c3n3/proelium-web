@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import QrCreator from '../components/QrCreator.vue'
 import Rules from '../components/Rules.vue'
 </script>
 

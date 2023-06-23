@@ -63,9 +63,6 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'Rules',
-  props: {
-
-  },
   data() {
 
   },
