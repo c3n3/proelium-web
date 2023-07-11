@@ -4,7 +4,7 @@
             <h3 class="card-title" :style="titleStyle()">{{title}}</h3>
             <p class="card-description" :style="descriptionStyle()">{{description}}</p>
             <div class="qr-container">
-                <div :id="'qr-card-' + unique"></div>
+                <div :id="'qr-card-' + unique" style="image-rendering: pixelated"></div>
             </div>
         </div>
     </template>
@@ -81,7 +81,7 @@ export default defineComponent({
           qr: document.createElement("canvas"),
           outputElem: document.getElementById("box1-qr") as HTMLElement,
           unique: 0,
-          scale: 1,
+          scale: 1.0294,
       }
   },
   methods: {
@@ -89,13 +89,13 @@ export default defineComponent({
     {
         const errCorLvl: qrcodegen.QrCode.Ecc = qrcodegen.QrCode.Ecc.LOW;  // Error correction level
         const qr: qrcodegen.QrCode = qrcodegen.QrCode.encodeText(this.value, errCorLvl);  // Make the QR Code symbol
-        qrcodegen.drawCanvas(qr, this.scale*3, 1, this.backColor(), "#000000", this.appendCanvas('qr-card-' + this.unique));  // Draw it on screen
-        // this.update = !this.update;
+        qrcodegen.drawCanvas(qr, 2, 1, this.backColor(), "#000000", this.appendCanvas('qr-card-' + this.unique));  // Draw it on screen
+        // this.update = !this.update;5
     },
     appendCanvas(caption: string): HTMLCanvasElement
     {
       if (this.qr) {
-        this.qr.remove()
+        this.qr.remove() //
       }
       this.qr = document.createElement("canvas");
       this.qr.setAttribute("draggable", "true")
@@ -119,6 +119,7 @@ export default defineComponent({
     {
         return `padding: ${this.margin}in;
         width: ${this.width}in;
+        padding-bottom: 0.33in;
         height: ${this.height}in;
         background-color: ${this.backColor()};
         border: 2px solid ${this.borderColor()};
@@ -130,12 +131,13 @@ export default defineComponent({
         return `    margin-top: ${0.1*this.scale}in;
         width: ${this.width*3/4}in;
         height: ${this.width*1/6}in;
-        font-size: ${0.125*this.scale}in;
+        font-size: ${0.14*this.scale}in;
         line-height: ${1.25*this.scale};`
     },
     descriptionStyle()
     {
         return `    margin-top: ${0.1*this.scale}in;
+        margin-bottom: ${0.3*this.scale}in;
         width: ${this.width*3/4}in;
         height: ${this.width*2/6}in;
         font-size: ${0.11*this.scale}in;
@@ -160,15 +162,15 @@ export default defineComponent({
     this.outputElem = document.getElementById('qr-card-' + this.unique) as HTMLElement
     this.generateQr();
 
-    htmlToImage.toPng(node as HTMLElement)
-    .then(function (dataUrl) {
-        var img = new Image();
-        img.src = dataUrl;
-        // document.body.appendChild(img);
-    })
-    .catch(function (error) {
-        console.error('oops, something went wrong!', error);
-    });
+    // htmlToImage.toPng(node as HTMLElement)
+    // .then(function (dataUrl) {
+    //     var img = new Image();
+    //     img.src = dataUrl;
+    //     // document.body.appendChild(img);
+    // })
+    // .catch(function (error) {
+    //     console.error('oops, something went wrong!', error);
+    // });
 },
 watch: {
     output: function (old: boolean, newVal: boolean) {
@@ -179,10 +181,10 @@ watch: {
   },
   computed: {
     width() : number {
-        return 1.25 * this.scale;
+        return 1.61 * this.scale;
     },
     height() : number {
-        return 1.75 * this.scale;
+        return 2.48 * this.scale;
     },
     margin() {
         return 0.15 * this.scale;

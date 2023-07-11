@@ -17,6 +17,8 @@ function unclean(input: any)
 
 export function parse(input: string)
 {
+    // Remove dumb windows characters
+    input = input.replace("\r", "")
     var lines = input.split("\n");
     var ret = [] as any;
 
