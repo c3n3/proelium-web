@@ -4,13 +4,15 @@ import Deck from '../components/Deck.vue'
 
 <template>
   <div class="top">
-    
     <div class="map-and-list">
       <div class="map">
         <div class="selector">
           <div class="selector-div">
             <div class="selector-label">Selector:</div>
           </div>
+          <select :value="currentBoard + ''">
+                <option v-for="board in boardTypes" @click="(currentBoard = board)">{{board}}</option>
+          </select>
           <div style="min-width: 50px;" class="qr-item" @click="changeSelectorUnit()"> {{ unitArray[currentUnit] }}</div>
           <div :style="'min-width: 50px;' + getColor(byteToName[getCurrentUnit()])" class="qr-item" @click="changePlayer()"> {{
             playerArray[currentPlayer] }}</div>
@@ -18,8 +20,8 @@ import Deck from '../components/Deck.vue'
         </div>
         <h1>{{ title == "" ? "[Give the map a title]" : title }}</h1>
         <div class="qr-grid">
-          <div v-for="i in length" :key="i" class="qr-row">
-            <div v-for="j in length" :key="j + redraw" class="qr-item" @click="change(i - 1, j - 1)" :style="getColor(byteToName[getItem(i - 1, j - 1)])
+          <div v-for="i in length()" :key="i" class="qr-row">
+            <div v-for="j in length()" :key="j + redraw" class="qr-item" @click="change(i - 1, j - 1)" :style="getColor(byteToName[getItem(i - 1, j - 1)])
               + item_style">
               {{ byteToName[getItem(i - 1, j - 1)] }}
             </div>
@@ -187,7 +189,11 @@ export default defineComponent({
     return {
       devices: this.propdata,
       qrId: "0123", 
-      length: 16,
+      boardTypes: [
+        "V2",
+        "V3_SMALL"
+      ],
+      currentBoard: "V2",
       count: Array<Array<qrcodegen.byte>>(),
       currentUnit: 0,
       currentPlayer: 0,
@@ -261,21 +267,21 @@ export default defineComponent({
       return ret;
     },
     getByteArray(): string {
-      // var ret = new Array<qrcodegen.byte>(this.length* this.length);
+      // var ret = new Array<qrcodegen.byte>(this.length()* this.length());
       var ret = "";
       ret += this.qrId;
-      for (var x = 0; x < this.length; x++) {
-        for (var y = 0; y < this.length; y++) {
-          // ret[x + y*this.length + 8] = this.getByte(this.getItem(x, y));
+      for (var x = 0; x < this.length(); x++) {
+        for (var y = 0; y < this.length(); y++) {
+          // ret[x + y*this.length() + 8] = this.getByte(this.getItem(x, y));
           ret += String.fromCharCode(this.getItem(x, y));
         }
       }
       var print = "";
-      for (var x = 0; x < this.length; x++) {
+      for (var x = 0; x < this.length(); x++) {
         print += "\n";
-        for (var y = 0; y < this.length; y++) {
-          // ret[x + y*this.length + 8] = this.getByte(this.getItem(x, y));
-          print += ret[x + y * this.length]
+        for (var y = 0; y < this.length(); y++) {
+          // ret[x + y*this.length() + 8] = this.getByte(this.getItem(x, y));
+          print += ret[x + y * this.length()]
         }
       }
 
@@ -300,8 +306,8 @@ export default defineComponent({
       return 0
     },
     clear() {
-      for (var i = 0; i < this.length; i++) {
-        for (var j = 0; j < this.length; j++) {
+      for (var i = 0; i < this.length(); i++) {
+        for (var j = 0; j < this.length(); j++) {
           this.count[i][j] = this.nameToByte[""]
         }
       }
@@ -317,7 +323,7 @@ export default defineComponent({
         this.count[x][y] = unit;
       }
       console.log("hit", x, y)
-      for (var i = 0; i < this.length; i++) {
+      for (var i = 0; i < this.length(); i++) {
         console.log("Out", this.count[x][y])
       }
       this.generateQr()
@@ -349,7 +355,7 @@ export default defineComponent({
     updateRelativeSize(e: Event | null) {
       this.redraw += 1
       var size = Math.floor(
-        (window.innerHeight < window.innerWidth ? window.innerHeight : window.innerWidth) * 0.65 * (1 / this.length)
+        (window.innerHeight < window.innerWidth ? window.innerHeight : window.innerWidth) * 0.65 * (1 / this.length())
       )
       if (size < 20) {
         size = 20
@@ -376,10 +382,10 @@ export default defineComponent({
       this.modifyMap = index
       this.title = this.cards[index].title
       this.description = this.cards[index].description
-      for (var x = 0; x < this.length; x++) {
+      for (var x = 0; x < this.length(); x++) {
         this.count[x] = new Array<qrcodegen.byte>();
-        for (var y = 0; y < this.length; y++) {
-          this.count[x].push(this.cards[index].value.charCodeAt(x * this.length + y + this.qrId.length))
+        for (var y = 0; y < this.length(); y++) {
+          this.count[x].push(this.cards[index].value.charCodeAt(x * this.length() + y + this.qrId.length))
         }
       }
       this.generateQr()
@@ -434,6 +440,15 @@ export default defineComponent({
         this.modifyMap = -1
       }
     },
+    length() : number {
+      if (this.currentBoard == "V2") {
+        return 16;
+      }
+      if (this.currentBoard == "V3_SMALL") {
+        return 8;
+      }
+      return 0;
+    }
   },
   mounted() {
     window.addEventListener("resize", this.updateRelativeSize);
@@ -458,9 +473,9 @@ export default defineComponent({
       }
     }
 
-    for (var x = 0; x < this.length; x++) {
+    for (var x = 0; x < this.length(); x++) {
       this.count[x] = new Array<qrcodegen.byte>();
-      for (var y = 0; y < this.length; y++) {
+      for (var y = 0; y < this.length(); y++) {
         this.count[x].push(this.nameToByte[""])
       }
     }
