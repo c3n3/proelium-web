@@ -4,13 +4,13 @@ import CardQrGenerator from '../components/CardQrGenerator.vue'
 
 
 <template>
-  <div class="container">
+  <div class="cardgen-container">
     <CardQrGenerator></CardQrGenerator>
   </div>
 </template>
 
 <style>
-.container {
+.cardgen-container {
   min-height: 100vh;
   display: flex;
   flex: 1;

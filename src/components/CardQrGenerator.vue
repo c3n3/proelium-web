@@ -88,7 +88,7 @@ import Deck from '../components/Deck.vue'
         <h1>Actions</h1>
         <div class="actions">
           <div class="top-action">
-            <div class="action" v-for="action in actions.length">
+            <div class="action" v-for="action in actions.length" :key="action">
               <h2>Action {{ action }}</h2>
               Type
               <select :value="actionToName[actions[action-1][0]] + ''">
@@ -367,6 +367,7 @@ export default defineComponent({
           MOVE_ACTION: String.fromCharCode(" ".charCodeAt(0) + 1),
           ATCK_ACTION: String.fromCharCode(" ".charCodeAt(0) + 2),
           SUICIDE_ACTION: String.fromCharCode(" ".charCodeAt(0) + 3),
+          NULL_ACTION_ITEM: [" ", 0, 0, 0],
           actionToName: {} as any,
           turnsCount: 1,
           modifyCard: -1,
@@ -540,11 +541,12 @@ export default defineComponent({
         this.cards[this.modifyCard].title = this.title
         this.cards[this.modifyCard].description = this.description
         this.cards[this.modifyCard].value = value
+        this.modifyCard = -1
       }
     },
     deleteCard(index: number)
     {
-      this.cards.splice(index, 1);
+      // this.cards.splice(index, 1);
       // this.$forceUpdate()
     },
     generateCsv()
@@ -592,11 +594,16 @@ export default defineComponent({
       strindex++;
 
       // 3 actions
+      this.actions = [] as any[]
       for (var i = 0; i < 3; i++) {
         // Ignore null actions
-        if (this.cards[index].value[strindex] == " ") {
+        if (this.cards[index].value[strindex] == this.NULL_ACTION) {
           break;
         }
+        if (this.actions.length <= i) {
+          this.actions.push([...this.NULL_ACTION_ITEM])
+        }
+        // this.actions.push("")
         this.actions[i][0] = this.cards[index].value[strindex];
         strindex++;
         this.actions[i][1] = this.getNumberFromChar(this.cards[index].value[strindex]);

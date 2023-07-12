@@ -20,7 +20,7 @@ import NumberSelector from '../components/NumberSelector.vue'
                     <div class="card-count">
                         {{ cards[card-1].count }}
                     </div>
-                    <NumberSelector :display="false" :min="1" :max="1000" :value="1" @change="(x) => cards[card-1].count = x"></NumberSelector>
+                    <NumberSelector :display="false" :min="1" :max="1000" :value="cards[card-1].count" @change="(x) => cards[card-1].count = x"></NumberSelector>
                 </div>
                 <div class="button-mods">
                     <div class="button-delete" @click="deleteCard(card-1)">&nbsp;X&nbsp;</div>
@@ -146,7 +146,7 @@ export default defineComponent({
     },
     generateCsv()
     {
-      return toString(this.cardlist);
+      return toString(this.cards);
     },
     deleteCard(index: number)
     {

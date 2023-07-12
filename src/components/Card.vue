@@ -14,7 +14,8 @@
 .card {
     border: black 2px solid;
     color: black;
-    justify-content: center;
+    flex-basis: 100%;
+    /* justify-content: center; */
     align-items: center;
     display: flex;
     flex-direction: column;
@@ -42,7 +43,8 @@
     display: flex;
     margin-top: 10px;
     justify-content: center;
-    align-items: center;
+    align-items: end;
+    flex-grow: 1;
 }
 </style>
 
@@ -74,7 +76,7 @@ function hash(str: string) {
 
 export default defineComponent({
   name: 'Card',
-  props: ['title', 'description', 'value', 'baseheight', 'basewidth', 'output'],
+  props: ['title', 'description', 'value', 'baseheight', 'basewidth', 'output', 'color'],
   data() {
       return {
           actions: 0,
@@ -108,12 +110,7 @@ export default defineComponent({
     },
     borderColor()
     {
-        return "black";
-        // return "white";
-        // return "#784a21"; // copper
-        // return "#5d64b1"; // settings
-        // return '#baaa25'; // gold
-        // return '#a7a7a7'; // silver
+        return this.color;
     },
     physicalStyle()
     {
@@ -122,25 +119,26 @@ export default defineComponent({
         padding-bottom: 0.33in;
         height: ${this.height}in;
         background-color: ${this.backColor()};
-        border: 2px solid ${this.borderColor()};
+        border: 20px solid ${this.borderColor()};
         `
-        // border: 20px solid ${this.borderColor()};
+        // border: 2px solid ${this.borderColor()};
     },
     titleStyle()
     {
         return `    margin-top: ${0.1*this.scale}in;
+        margin-bottom: ${0.3*this.scale}in;
         width: ${this.width*3/4}in;
-        height: ${this.width*1/6}in;
-        font-size: ${0.14*this.scale}in;
+        flex-grow: 0;
+        font-size: 0.22in;
         line-height: ${1.25*this.scale};`
     },
     descriptionStyle()
     {
-        return `    margin-top: ${0.1*this.scale}in;
+        return `    
+        margin: 5px;
         margin-bottom: ${0.3*this.scale}in;
         width: ${this.width*3/4}in;
-        height: ${this.width*2/6}in;
-        font-size: ${0.11*this.scale}in;
+        font-size: 0.17in;
         line-height: ${1.25*this.scale};`
     },
     download()
@@ -181,10 +179,10 @@ watch: {
   },
   computed: {
     width() : number {
-        return 1.61 * this.scale;
+        return 2.2 * this.scale;
     },
     height() : number {
-        return 2.48 * this.scale;
+        return 3.43 * this.scale;
     },
     margin() {
         return 0.15 * this.scale;

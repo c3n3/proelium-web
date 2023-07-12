@@ -16,6 +16,13 @@ import NumberSelector from '../components/NumberSelector.vue'
       Columns: <NumberSelector :min="1" :max="10" :value="3" @change="(x) => columns = x"></NumberSelector>
       Rows per page: <NumberSelector :min="1" :max="10" :value="3" @change="(x) => rowsPerPage = x"></NumberSelector>
     </div>
+    <div class="color-select">
+      Border Color
+      <select :style="'border: 10px solid ' + currentColor + ';'" @change="currentColor = $event.target.value">
+        <option v-for="color in colors" :style="'background-color:' + color + ';'" :value="color">
+        {{ color }}</option>
+      </select>
+    </div>
     <div class="button" @click="downloadAll()">Download all</div>
   </div>
   <div id="section-to-print">
@@ -25,7 +32,8 @@ import NumberSelector from '../components/NumberSelector.vue'
         <Card v-if="(card - 1) + (row - 1) * columns < csvRes.length"
         :title="csvRes[(card - 1) + (row - 1) * columns]['title']"
         :description="csvRes[(card - 1) + (row - 1) * columns]['description']"
-        :value="csvRes[(card - 1) + (row - 1) * columns]['value']" :output="shouldDownload"></Card>
+        :value="csvRes[(card - 1) + (row - 1) * columns]['value']" :output="shouldDownload"
+        :color="currentColor"></Card>
       </div>
     </div>
   </div>
@@ -33,6 +41,14 @@ import NumberSelector from '../components/NumberSelector.vue'
 
 
 <style scoped>
+.selectors {
+  margin: 5px;
+}
+.color-select {
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+}
 .button:hover {
   background-color: aliceblue;
   color: black;
@@ -78,6 +94,7 @@ import NumberSelector from '../components/NumberSelector.vue'
 
 .input-items {
   display: flex;
+  margin: 5px;
 }
 
 .row {
@@ -126,6 +143,15 @@ export default defineComponent({
       rowsPerPage: 3,
       shouldDownload: false,
       fileIn: [] as any,
+      colors: [
+        "black",
+        "white",
+        "#784a21",
+        "#5d64b1",
+        "#baaa25",
+        "#a7a7a7",
+      ],
+      currentColor: "black"
     }
   },
   methods: {
