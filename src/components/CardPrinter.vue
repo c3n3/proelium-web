@@ -18,8 +18,8 @@ import NumberSelector from '../components/NumberSelector.vue'
     </div>
     <div class="color-select">
       Border Color
-      <select :style="'border: 10px solid ' + currentColor + ';'" @change="currentColor = $event.target.value">
-        <option v-for="color in colors" :style="'background-color:' + color + ';'" :value="color">
+      <select :style="'border: 10px solid ' + currentColor + ';'" :value="currentColor + ''">
+        <option v-for="color in colors" :style="'background-color:' + color + ';'" :value="color" @click="currentColor = color">
         {{ color }}</option>
       </select>
     </div>
