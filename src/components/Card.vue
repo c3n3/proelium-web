@@ -145,7 +145,7 @@ export default defineComponent({
     {
         var self = this;
         htmlToImage.toPng(document.getElementById('card-' + this.unique) as HTMLElement,
-                    {'canvasWidth': 732, 'canvasHeight': 1101})
+                    {'canvasWidth': 732*1.11755725191, 'canvasHeight': 1101*1.11755725191})
             .then(function (dataUrl) {
                 (download as any)(dataUrl, 'card-' + self.title + '-' + self.unique + '-' + hash(self.description + self.value) + '.png');
             });
@@ -179,7 +179,7 @@ watch: {
   },
   computed: {
     width() : number {
-        return 2.2 * this.scale;
+        return 2.2 * this.scale * 1.039;
     },
     height() : number {
         return 3.43 * this.scale;

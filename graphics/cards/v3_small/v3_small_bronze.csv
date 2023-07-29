@@ -1,5 +1,5 @@
 title|description|value|count
-Short Move|Move:{~}Infantry: 1{~}Cavalry: 2{~}Artillery: 1|/'_!!!!!"!        |2
+Short Move|Move:{~}Infantry: 1{~}Cavalry: 1{~}Artillery: 1|/'_!!!!!!!        |2
 Move|Move:{~}Infantry: 3{~}Cavalry: 4{~}Artillery: 2|/'_!!!!#$"        |2
 Long Move|Move:{~}Infantry: 4{~}Cavalry: 6{~}Artillery: 3|/'_!!!!$&#        |2
 Long haul|Move the artillery 4 spaces|/$_!!!!  $        |2

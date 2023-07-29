@@ -150,6 +150,7 @@ export default defineComponent({
         "#5d64b1",
         "#baaa25",
         "#a7a7a7",
+        '#376d39',
       ],
       currentColor: "black"
     }
