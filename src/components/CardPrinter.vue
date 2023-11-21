@@ -26,7 +26,7 @@ import NumberSelector from '../components/NumberSelector.vue'
     <div class="button" @click="downloadAll()">Download all</div>
   </div>
   <div id="section-to-print">
-    <div class="row pagebreak">Do not print this page</div>
+    <div class="do-no-show row pagebreak">Do not print this page</div>
     <div v-for="row in rows" :class="'row ' + ((row % rowsPerPage) == 0 ? 'pagebreak' : '')" :key="row">
       <div v-for="card in columns" :key="card">
         <Card v-if="(card - 1) + (row - 1) * columns < csvRes.length"
@@ -54,12 +54,19 @@ import NumberSelector from '../components/NumberSelector.vue'
   color: black;
 }
 
+.do-no-show {
+  display: none !important; 
+}
+
 @page {
   size: auto;
   margin-top: 20px;
 }
 
 @media print {
+  .do-no-show {
+    display: block !important;
+  }
   .pagebreak {
     clear: both;
     page-break-after: always;
