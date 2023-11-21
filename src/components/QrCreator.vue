@@ -10,9 +10,9 @@ import Deck from '../components/Deck.vue'
           <div class="selector-div">
             <div class="selector-label">Selector:</div>
           </div>
-          <select :value="currentBoard + ''">
+          <!-- <select :value="currentBoard + ''">
                 <option v-for="board in boardTypes" @click="(currentBoard = board)">{{board}}</option>
-          </select>
+          </select> -->
           <div style="min-width: 50px;" class="qr-item" @click="changeSelectorUnit()"> {{ unitArray[currentUnit] }}</div>
           <div :style="'min-width: 50px;' + getColor(byteToName[getCurrentUnit()])" class="qr-item" @click="changePlayer()"> {{
             playerArray[currentPlayer] }}</div>
