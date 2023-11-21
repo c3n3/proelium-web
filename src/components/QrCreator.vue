@@ -193,7 +193,7 @@ export default defineComponent({
         "V2",
         "V3_SMALL"
       ],
-      currentBoard: "V2",
+      currentBoard: "V3_SMALL",
       count: Array<Array<qrcodegen.byte>>(),
       currentUnit: 0,
       currentPlayer: 0,

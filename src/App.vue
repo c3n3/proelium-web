@@ -14,6 +14,10 @@ import { RouterLink, RouterView } from 'vue-router'
 </template>
 
 <style scoped>
+div {
+  background: #181818;
+  color: rgb(185, 179, 162);
+}
 header {
   line-height: 1.5;
   max-height: 100vh;
