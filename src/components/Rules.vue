@@ -93,7 +93,7 @@
                 card.</p>
             <p class="text-line" style="margin-bottom: 0in">- Players can trade
                 2 bronze for 1 silver, 3 bronze for 1 gold, 1 bronze and 1 silver
-                for 1 gold, and vice versa</p>
+                for 1 gold, and 2 silver for 1 gold</p>
             <p class="text-line" style="margin-bottom: 0in">- Players may draw
                 one bronze card at the end of each turn.</p>
             <p class="text-line" style="margin-bottom: 0in">- To play a card,
@@ -101,8 +101,9 @@
                 button located on the opposite side of the scan port.</p>
             <p class="text-line" style="margin-bottom: 0in">- Cards are played
                 in the future. If multiple cards are slated to play after a single
-                turn, the cards will execute in the order they were played (whoever
-                scanned the card first will play first, and last last).</p>
+                turn, the cards will execute in the order they were played (whichever
+                card was scanned first will play first, and the last, last).</p>
+            <br>
             <h1 class="western">Controller:</h1>
             <p class="text-line" style="margin-bottom: 0in">- Controllers have
                 three sections: ‘Turn’, ‘Unit’, ‘Direction’.</p>
@@ -157,6 +158,7 @@
                     play, the play button will blink indicating you can start.</p>
             </li>
         </ul>
+        <br>
         <h1 class="western">Game play:</h1>
         <p class="text-line" style="margin-bottom: 0in">- Players:</p>
         <ul>
